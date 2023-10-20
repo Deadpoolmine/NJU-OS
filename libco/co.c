@@ -1,10 +1,10 @@
 #include "co.h"
 #include "stdint.h"
+#include "stdio.h"
 #include "unistd.h"
 #include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
-#include "stdio.h"
 
 #define STACK_SIZE 8192
 #define MAX_CO_NUM 128
@@ -49,7 +49,7 @@ struct co_pool {
 };
 
 struct co *current;
-struct co_pool co_pool; 
+struct co_pool co_pool;
 
 static inline int manage_co(struct co *co)
 {
@@ -75,6 +75,8 @@ static inline int unmanage_co(struct co *co)
     return -1;
 }
 
+void co_yield (void);
+
 struct co *co_start(const char *name, void (*func)(void *), void *arg)
 {
     struct co *co = malloc(sizeof(struct co));
@@ -94,8 +96,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 
     printf("co %s initialized, start exec\n", co->name);
 
-    if (func != NULL)
-        stack_switch_call(co->stack + STACK_SIZE, func, (uintptr_t)arg);
+    co_yield ();
 
     return co;
 }
@@ -107,9 +108,25 @@ void co_wait(struct co *co)
 void co_yield (void)
 {
     int val = setjmp(current->context);
+    struct co *next = NULL;
     if (val == SWITCH_OUT) {
         /* save context using setjmp */
-        // 
+        for (int i = 0; i < MAX_CO_NUM; ++i) {
+            if (co_pool.co[i] != NULL && co_pool.co[i]->status != CO_RUNNING) {
+                next = co_pool.co[i];
+                break;
+            }
+        }
+        assert(next != NULL);
+        printf("switch to co %s\n", next->name);
+        current->status = CO_WAITING;
+        if (next->status == CO_NEW) {
+            next->status = CO_RUNNING;
+            stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
+        } else {
+            next->status = CO_RUNNING;
+            longjmp(next->context, SWITCH_IN);
+        }
     } else {
         /* context is restored by longjmp, do nothing */
         return;
