@@ -125,11 +125,15 @@ void co_yield (void)
             } else if (co_pool.co[i]->status == CO_RUNNING) {
                 next = co_pool.co[i];
                 break;
-            } else if (co_pool.co[i]->status == CO_WAITING) {
+            } 
+        }
+        for (int i = 0; i < MAX_CO_NUM; ++i) {
+            if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_WAITING) {
                 next = co_pool.co[i];
                 break;
-            }
+            } 
         }
+
         assert(next != NULL);
         printf("switch to co %s\n", next->name);
         if (next->status == CO_NEW) {
