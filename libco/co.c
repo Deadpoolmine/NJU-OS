@@ -88,7 +88,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
     co->func = func;
     co->arg = arg;
 
-    co->status = CO_NEW;
+    co->status = func == NULL ? CO_RUNNING : CO_NEW;
     co->waiter = NULL;
 
     memset(co->stack, 0, STACK_SIZE);
