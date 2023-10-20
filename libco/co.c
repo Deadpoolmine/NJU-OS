@@ -167,7 +167,7 @@ void co_yield (void)
             // assert stack is 16-byte aligned
             // assert(((uintptr_t)(current->stack + STACK_SIZE) & 0xF) == 0);
             uintptr_t stack_top = (uintptr_t)(current->stack + STACK_SIZE) & 0xF;
-            stack_switch_call(stack_top, current->func, (uintptr_t)current->arg);
+            stack_switch_call((void *)stack_top, current->func, (uintptr_t)current->arg);
             // printf("current after @ %p\n", current);
             current->status = CO_DEAD;
             co_yield();
