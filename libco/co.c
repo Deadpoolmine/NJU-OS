@@ -13,6 +13,18 @@
 #define SWITCH_IN  1
 // https://unix.stackexchange.com/questions/425013/why-do-i-have-to-set-ld-library-path-before-running-a-program-even-though-i-alr
 
+static inline uint64_t get_stack_pointer(void)
+{
+    uint64_t sp;
+    asm volatile("movq %%rsp, %0" : "=r"(sp));
+    return sp;
+}
+
+static inline void set_stack_pointer(uint64_t sp)
+{
+    asm volatile("movq %0, %%rsp" : : "r"(sp));
+}
+
 static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 {
     asm volatile(
@@ -143,7 +155,11 @@ void co_yield (void)
             next->status = CO_RUNNING;
             current = next;
             int a = 12391247;
+
+            printf("stack before %lld\n", get_stack_pointer);
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
+            printf("stack after %lld\n", get_stack_pointer);
+
             printf("co finished %d\n", a);
         } else {
             current = next;
