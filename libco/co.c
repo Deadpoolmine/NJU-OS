@@ -3,6 +3,7 @@
 #include "unistd.h"
 #include <setjmp.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define STACK_SIZE 8192
 #define MAX_CO_NUM 128
@@ -86,7 +87,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
     co->status = CO_NEW;
     co->waiter = NULL;
 
-    memset(&co->stack, 0, STACK_SIZE);
+    memset(co->stack, 0, STACK_SIZE);
 
     manage_co(co);
 
