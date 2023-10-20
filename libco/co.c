@@ -178,7 +178,8 @@ void co_yield (void)
 // #else
 //             printf("%s stack top: %p, start: %p\n", current->name, (void *)get_stack_pointer(), (void *)stack_top);
 // #endif
-            // assert(current != NULL);
+            assert(current != NULL);
+
             current->status = CO_DEAD;
             co_yield ();
         } else {
