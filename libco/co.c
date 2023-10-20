@@ -35,6 +35,7 @@ static inline void set_stack_pointer(unsigned long sp)
 
 static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 {
+    unsigned long prev_sp = get_stack_pointer();
     asm volatile(
 #if __x86_64__
         "movq %0, %%rsp; movq %2, %%rdi; call *%1"
@@ -44,6 +45,7 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
         : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
 #endif
     );
+    set_stack_pointer(prev_sp);
 }
 
 enum co_status {
@@ -69,7 +71,6 @@ struct co_pool {
     int co_num;
 };
 
-unsigned long prev_sp;
 struct co *current;
 struct co_pool co_pool;
 
@@ -163,11 +164,7 @@ void co_yield (void)
         if (next->status == CO_NEW) {
             next->status = CO_RUNNING;
             current = next;
-            prev_sp = get_stack_pointer();
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
-            printf("co %s finished\n", next->name);
-            set_stack_pointer(prev_sp);
-            printf("co %s finished\n", next->name);
         } else {
             current = next;
             longjmp(next->context, SWITCH_IN);
