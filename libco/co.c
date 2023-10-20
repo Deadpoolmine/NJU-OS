@@ -127,11 +127,14 @@ void co_yield (void)
                 break;
             } 
         }
-        for (int i = 0; i < MAX_CO_NUM; ++i) {
-            if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_WAITING) {
-                next = co_pool.co[i];
-                break;
-            } 
+        
+        if (!next) {
+            for (int i = 0; i < MAX_CO_NUM; ++i) {
+                if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_WAITING) {
+                    next = co_pool.co[i];
+                    break;
+                } 
+            }
         }
 
         assert(next != NULL);
