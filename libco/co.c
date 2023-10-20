@@ -92,11 +92,10 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 
     manage_co(co);
 
-    printf("co initialized, start exec\n");
+    printf("co %s initialized, start exec\n", co->name);
 
     stack_switch_call(co->stack + STACK_SIZE, func, (uintptr_t)arg);
 
-    printf("co initialized, start exec\n");
     return co;
 }
 
