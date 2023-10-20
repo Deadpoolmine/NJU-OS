@@ -146,6 +146,7 @@ void co_yield (void)
         } else {
             current = next;
             longjmp(next->context, SWITCH_IN);
+            printf("switch back to co %s\n", current->name);
         }
     } else {
         printf("switch back to co %s\n", current->name);
