@@ -164,11 +164,7 @@ void co_yield (void)
             next->status = CO_RUNNING;
             current = next;
             prev_sp = get_stack_pointer();
-            printf("before %ld\n", prev_sp);
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
-            printf("after %ld\n", prev_sp);
-            sleep(10);
-            assert(prev_sp != 0);
             set_stack_pointer(prev_sp);
             printf("co %s finished\n", next->name);
         } else {
