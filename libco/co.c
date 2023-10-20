@@ -4,6 +4,7 @@
 #include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
+#include "stdio.h"
 
 #define STACK_SIZE 8192
 #define MAX_CO_NUM 128
@@ -90,7 +91,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
     memset(co->stack, 0, STACK_SIZE);
 
     manage_co(co);
-
+    
     stack_switch_call(co->stack + STACK_SIZE, func, (uintptr_t)arg);
 
     return co;
@@ -114,6 +115,7 @@ void co_yield (void)
 
 __attribute__((constructor)) void co_main_init()
 {
+    printf("co_main_init\n");
     current = co_start("main", NULL, NULL);
     for (int i = 0; i < MAX_CO_NUM; ++i) {
         co_pool.co[i] = NULL;
