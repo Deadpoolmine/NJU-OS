@@ -166,6 +166,7 @@ void co_yield (void)
             current = next;
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
             printf("switch back to co %d\n", 0);
+            sleep(1);
             assert(prev_sp != 0);
             set_stack_pointer(prev_sp);
         } else {
