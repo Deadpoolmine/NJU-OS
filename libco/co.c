@@ -45,7 +45,7 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
         : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
 #endif
     );
-    // set_stack_pointer((void *)prev_sp);
+    set_stack_pointer((void *)prev_sp);
 }
 
 enum co_status {
@@ -165,6 +165,7 @@ void co_yield (void)
             next->status = CO_RUNNING;
             current = next;
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
+            printf("co '%s' finished\n", next->name);
         } else {
             current = next;
             longjmp(next->context, SWITCH_IN);
