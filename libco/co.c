@@ -164,9 +164,9 @@ void co_yield (void)
             current = next;
             int a = 12391247;
 
-            printf("stack before %p\n", (uintptr_t)get_stack_pointer());
+            printf("stack before %p\n", (void *) get_stack_pointer());
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
-            printf("stack after %p\n", (uintptr_t)get_stack_pointer());
+            printf("stack after %p\n", (void *) get_stack_pointer());
 
             printf("co finished %d\n", a);
         } else {
