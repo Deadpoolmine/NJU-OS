@@ -112,7 +112,7 @@ void co_yield (void)
     }
 }
 
-__attribute__((constructor)) co_main_init()
+__attribute__((constructor)) int co_main_init()
 {
     current = co_start("main", NULL, NULL);
     for (int i = 0; i < MAX_CO_NUM; ++i) {
