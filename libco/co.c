@@ -96,6 +96,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 
     stack_switch_call(co->stack + STACK_SIZE, func, (uintptr_t)arg);
 
+    printf("co initialized, start exec\n");
     return co;
 }
 
