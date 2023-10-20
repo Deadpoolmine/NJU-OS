@@ -69,8 +69,8 @@ struct co_pool {
     int co_num;
 };
 
+unsigned long prev_sp;
 struct co *current;
-struct co *prev;
 struct co_pool co_pool;
 
 static inline int manage_co(struct co *co)
@@ -162,13 +162,11 @@ void co_yield (void)
         printf("switch to co %s\n", next->name);
         if (next->status == CO_NEW) {
             next->status = CO_RUNNING;
-            prev = current;
+            prev_sp = get_stack_pointer();
             current = next;
-
-            // printf("stack before %p\n", (void *) get_stack_pointer());
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
-            // printf("stack after %p\n", (void *) get_stack_pointer());
-            longjmp(prev->context, SWITCH_IN);
+            assert(prev_sp != 0);
+            set_stack_pointer(prev_sp);
         } else {
             current = next;
             longjmp(next->context, SWITCH_IN);
@@ -187,5 +185,6 @@ __attribute__((constructor)) void co_main_init()
         co_pool.co[i] = NULL;
     }
     co_pool.co_num = 0;
+    prev_sp = 0;
     current = co_start("main", NULL, NULL);
 }
