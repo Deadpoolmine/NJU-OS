@@ -16,13 +16,21 @@
 static inline unsigned long get_stack_pointer(void)
 {
     unsigned long sp;
+#if __x86_64__
     asm volatile("movq %%rsp, %0" : "=r"(sp));
+#else
+    asm volatile("movl %%esp, %0" : "=r"(sp));
+#endif
     return sp;
 }
 
 static inline void set_stack_pointer(unsigned long sp)
 {
+#if __x86_64__
     asm volatile("movq %0, %%rsp" : : "r"(sp));
+#else
+    asm volatile("movl %0, %%esp" : : "r"(sp));
+#endif
 }
 
 static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
@@ -137,7 +145,7 @@ void co_yield (void)
             } else if (co_pool.co[i]->status == CO_RUNNING) {
                 next = co_pool.co[i];
                 break;
-            } 
+            }
         }
 
         if (!next) {
@@ -145,7 +153,7 @@ void co_yield (void)
                 if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_WAITING) {
                     next = co_pool.co[i];
                     break;
-                } 
+                }
             }
         }
 
