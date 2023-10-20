@@ -1,8 +1,8 @@
-#include "co-test.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "co-test.h"
 
 int g_count = 0;
 
