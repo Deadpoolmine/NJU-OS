@@ -143,7 +143,9 @@ void co_yield (void)
             next->status = CO_RUNNING;
             current = next;
             int a = 12391247;
+            printf("current %llx\n", current);
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
+            printf("current %llx\n", current);
             printf("co '%s' finished %d\n", current->name, a);
         } else {
             current = next;
