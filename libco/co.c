@@ -143,7 +143,6 @@ void co_yield (void)
             next->status = CO_RUNNING;
             current = next;
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
-            longjmp(co_pool.co[2]->context, SWITCH_IN);
         } else {
             current = next;
             longjmp(next->context, SWITCH_IN);
