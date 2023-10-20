@@ -46,6 +46,9 @@ struct co_pool {
     int co_num;
 };
 
+struct co *current;
+struct co_pool co_pool; 
+
 static inline int manage_co(struct co *co)
 {
     for (int i = 0; i < MAX_CO_NUM; ++i) {
@@ -69,9 +72,6 @@ static inline int unmanage_co(struct co *co)
     }
     return -1;
 }
-
-struct co *current;
-struct co_pool co_pool; 
 
 struct co *co_start(const char *name, void (*func)(void *), void *arg)
 {
