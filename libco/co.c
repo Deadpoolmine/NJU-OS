@@ -126,8 +126,8 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 void co_wait(struct co *co)
 {
     printf("co '%s' waiting for co '%s'\n", current->name, co->name);
-    co->waiter = current;
     current->status = CO_WAITING;
+    co->waiter = current;
     while (co->status != CO_DEAD)
         co_yield ();
     printf("wait '%s' over, '%s' resumed\n", co->name, current->name);
