@@ -137,9 +137,9 @@ void co_yield (void)
 __attribute__((constructor)) void co_main_init()
 {
     printf("co_main_init\n");
-    current = co_start("main", NULL, NULL);
     for (int i = 0; i < MAX_CO_NUM; ++i) {
         co_pool.co[i] = NULL;
     }
     co_pool.co_num = 0;
+    current = co_start("main", NULL, NULL);
 }
