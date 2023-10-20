@@ -2,10 +2,10 @@
 #include "stdint.h"
 #include "stdio.h"
 #include "unistd.h"
+#include <assert.h>
 #include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #define STACK_SIZE 8192
 #define MAX_CO_NUM 128
@@ -106,6 +106,9 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 void co_wait(struct co *co)
 {
     printf("co '%s' waiting for co '%s'\n", current->name, co->name);
+    co->waiter = current;
+    current->status = CO_WAITING;
+    co_yield ();
 }
 
 void co_yield (void)
