@@ -166,8 +166,8 @@ void co_yield (void)
             current = next;
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
             unmanage_co(current);
-            current->status = CO_DEAD;
             printf("co '%s' finished\n", current->name);
+            current->status = CO_DEAD;
         } else {
             current = next;
             longjmp(next->context, SWITCH_IN);
