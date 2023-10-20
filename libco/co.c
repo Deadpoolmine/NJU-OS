@@ -162,9 +162,9 @@ void co_yield (void)
         if (next->status == CO_NEW) {
             next->status = CO_RUNNING;
             current = next;
-            printf("next @ %p\n", next);
+            printf("next before @ %p\n", next);
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
-            printf("next @ %p\n", next);
+            printf("next after @ %p\n", next);
             next->status = CO_DEAD;
             co_yield();
         } else {
