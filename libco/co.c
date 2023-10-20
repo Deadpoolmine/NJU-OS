@@ -35,7 +35,7 @@ static inline void set_stack_pointer(void *sp)
 
 static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 {
-    unsigned long prev_sp = get_stack_pointer();
+    uintptr_t prev_sp = get_stack_pointer();
     asm volatile(
 #if __x86_64__
         "movq %0, %%rsp; movq %2, %%rdi; call *%1"
