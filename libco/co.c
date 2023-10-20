@@ -5,6 +5,7 @@
 #include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #define STACK_SIZE 8192
 #define MAX_CO_NUM 128
