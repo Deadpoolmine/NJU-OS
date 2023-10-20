@@ -91,7 +91,9 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
     memset(co->stack, 0, STACK_SIZE);
 
     manage_co(co);
-    printf("co_main_init\n");
+
+    printf("co initialized, start exec\n");
+
     stack_switch_call(co->stack + STACK_SIZE, func, (uintptr_t)arg);
 
     return co;
