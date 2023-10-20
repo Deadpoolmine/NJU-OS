@@ -173,12 +173,12 @@ void co_yield (void)
 
             stack_switch_call((void *)stack_top, current->func, (uintptr_t)current->arg);
 
-#if __x86_64__
-            printf("%s stack top: %p, start stack top: %p\n", current->name, (void *)get_stack_pointer(), (void *)stack_top);
-#else
-            printf("%s stack top: %p, start: %p\n", current->name, (void *)get_stack_pointer(), (void *)stack_top);
-#endif
-
+// #if __x86_64__
+//             printf("%s stack top: %p, start stack top: %p\n", current->name, (void *)get_stack_pointer(), (void *)stack_top);
+// #else
+//             printf("%s stack top: %p, start: %p\n", current->name, (void *)get_stack_pointer(), (void *)stack_top);
+// #endif
+            assert(current == NULL);
             current->status = CO_DEAD;
             co_yield ();
         } else {
