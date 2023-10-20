@@ -162,7 +162,7 @@ void co_yield (void)
         printf("switch to co %s\n", next->name);
         if (next->status == CO_NEW) {
             next->status = CO_RUNNING;
-            printf("%s stack top: %p\n", current->name, (void *)get_stack_pointer());
+            // printf("%s stack top: %p\n", current->name, (void *)get_stack_pointer());
             
             current = next;
 
