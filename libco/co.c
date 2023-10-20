@@ -168,7 +168,7 @@ void co_yield (void)
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
             printf("stack after %p\n", (void *) get_stack_pointer());
 
-            printf("co finished %d\n", a);
+            printf("co finished %d\n", 0);
         } else {
             current = next;
             longjmp(next->context, SWITCH_IN);
