@@ -13,14 +13,14 @@
 #define SWITCH_IN  1
 // https://unix.stackexchange.com/questions/425013/why-do-i-have-to-set-ld-library-path-before-running-a-program-even-though-i-alr
 
-static inline uint64_t get_stack_pointer(void)
+static inline unsigned long get_stack_pointer(void)
 {
-    uint64_t sp;
+    unsigned long sp;
     asm volatile("movq %%rsp, %0" : "=r"(sp));
     return sp;
 }
 
-static inline void set_stack_pointer(uint64_t sp)
+static inline void set_stack_pointer(unsigned long sp)
 {
     asm volatile("movq %0, %%rsp" : : "r"(sp));
 }
