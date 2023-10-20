@@ -174,7 +174,7 @@ void co_yield (void)
             longjmp(next->context, SWITCH_IN);
         }
     } else {
-        printf("switch back to co %s\n", current->name);
+        // printf("switch back to co %s\n", current->name);
         /* context is restored by longjmp, do nothing */
         return;
     }
