@@ -124,9 +124,11 @@ void co_yield (void)
         current->status = CO_WAITING;
         if (next->status == CO_NEW) {
             next->status = CO_RUNNING;
+            current = next;
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
         } else {
             next->status = CO_RUNNING;
+            current = next;
             longjmp(next->context, SWITCH_IN);
         }
     } else {
