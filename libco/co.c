@@ -183,6 +183,5 @@ __attribute__((constructor)) void co_main_init()
         co_pool.co[i] = NULL;
     }
     co_pool.co_num = 0;
-    prev_sp = 0;
     current = co_start("main", NULL, NULL);
 }
