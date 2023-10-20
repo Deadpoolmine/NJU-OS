@@ -165,6 +165,7 @@ void co_yield (void)
             next->status = CO_RUNNING;
             current = next;
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
+            printf("co '%s' finished\n", current->name);
             current->status = CO_DEAD;
         } else {
             current = next;
