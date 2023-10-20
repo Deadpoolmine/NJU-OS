@@ -165,6 +165,7 @@ void co_yield (void)
             printf("next before @ %p\n", next);
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
             printf("next after @ %p\n", next);
+            current->status = CO_DEAD;
             next->status = CO_DEAD;
             co_yield();
         } else {
