@@ -72,6 +72,7 @@ struct co_pool {
 };
 
 struct co *current;
+struct co *prev;
 struct co_pool co_pool;
 
 static inline int manage_co(struct co *co)
@@ -163,11 +164,13 @@ void co_yield (void)
         printf("switch to co %s\n", next->name);
         if (next->status == CO_NEW) {
             next->status = CO_RUNNING;
+            prev = current;
             current = next;
             stack_switch_call(next->stack + STACK_SIZE, next->func, (uintptr_t)next->arg);
-            unmanage_co(current);
-            printf("co '%s' finished\n", current->name);
-            current->status = CO_DEAD;
+            longjmp(prev->context, SWITCH_IN); 
+            // unmanage_co(current);
+            // current->status = CO_DEAD;
+            // printf("co '%s' finished\n", current->name);
         } else {
             current = next;
             longjmp(next->context, SWITCH_IN);
