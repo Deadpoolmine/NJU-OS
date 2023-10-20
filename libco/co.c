@@ -95,7 +95,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 
     manage_co(co);
 
-    printf("co %s initialized, start exec\n", co->name);
+    printf("co %s initialized, schedule\n", co->name == NULL ? "main" : co->name);
 
     co_yield ();
 
