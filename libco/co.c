@@ -82,7 +82,7 @@ struct co_pool {
 };
 
 // this must be static, or line 186 will access it using local registers, weird!
-static struct co *current;
+struct co *current;
 struct co_pool co_pool;
 
 static inline int manage_co(struct co *co)
@@ -191,7 +191,7 @@ void co_yield (void)
             // why here not use %rbp? instead using rcx?
             // NOTE: we must use a static global variable here to prevent the compiler
             //       from using current as non-saved rcx. F**King compiler!
-            current->status = CO_DEAD;
+            ((volatile struct co *)current)->status = CO_DEAD;
             co_yield ();
         } else {
             current = next;
