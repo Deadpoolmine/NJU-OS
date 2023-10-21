@@ -143,7 +143,7 @@ void co_yield (void)
             if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_NEW) {
                 next = co_pool.co[i];
                 break;
-            } else if (co_pool.co[i]->status == CO_RUNNING) {
+            } else if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_RUNNING) {
                 next = co_pool.co[i];
                 break;
             }
@@ -159,7 +159,9 @@ void co_yield (void)
         }
 
         assert(next != NULL);
+        
         printf("switch to co %s\n", next->name);
+
         if (next->status == CO_NEW) {
             next->status = CO_RUNNING;
             
@@ -167,11 +169,13 @@ void co_yield (void)
 
             uintptr_t stack_top = (uintptr_t)(current->stack + STACK_SIZE);
             stack_top = (stack_top - 1) & ~0xF;
-            // printf("%s start stack top: %p\n", current->name, (void *)stack_top);
-            // printf("%s stack top: %p\n", current->name, (void *)get_stack_pointer());
+
             stack_switch_call((void *)stack_top, current->func, (uintptr_t)current->arg);
+            
             // current is assigned to a local register %rcx
             // why here not use %rbp? instead using rcx?
+            // NOTE: we must use a local variable here to prevent the compiler 
+            //       from using current as non-saved rcx. F**King compiler! 
             next->status = CO_DEAD;
             co_yield ();
         } else {
