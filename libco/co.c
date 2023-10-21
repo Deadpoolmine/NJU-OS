@@ -73,6 +73,7 @@ struct co {
 struct co_pool {
     struct co *co[MAX_CO_NUM];
     int co_num;
+    int poller;
 };
 
 struct co *current;
@@ -145,20 +146,19 @@ void co_yield (void)
     struct co *next = NULL;
     if (val == SWITCH_OUT) {
         /* save context using setjmp */
-        for (int i = 0; i < MAX_CO_NUM; ++i) {
+        for (int i = co_pool.poller; i < MAX_CO_NUM; i++) {
             if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_NEW) {
                 next = co_pool.co[i];
-                break;
-            } else if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_RUNNING) {
-                next = co_pool.co[i];
+                co_pool.poller = (i + 1) % MAX_CO_NUM;
                 break;
             }
         }
 
         if (!next) {
-            for (int i = 0; i < MAX_CO_NUM; ++i) {
-                if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_WAITING) {
+            for (int i = 0; i < co_pool.poller; i++) {
+                if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_NEW) {
                     next = co_pool.co[i];
+                    co_pool.poller = (i + 1) % MAX_CO_NUM;
                     break;
                 }
             }
@@ -202,5 +202,6 @@ __attribute__((constructor)) void co_main_init()
         co_pool.co[i] = NULL;
     }
     co_pool.co_num = 0;
+    co_pool.poller = 0;
     current = co_start("main", NULL, NULL);
 }
