@@ -13,6 +13,12 @@
 #define SWITCH_IN  1
 // https://unix.stackexchange.com/questions/425013/why-do-i-have-to-set-ld-library-path-before-running-a-program-even-though-i-alr
 
+#ifdef DEBUG
+  #define debug(...) printf(__VA_ARGS__)
+#else
+  #define debug()
+#endif
+
 static inline uintptr_t get_stack_pointer(void)
 {
     uintptr_t sp;
@@ -115,7 +121,7 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 
     manage_co(co);
 
-    printf("co '%s' initialized, scheduling\n", co->name == NULL ? "main" : co->name);
+    debug("co '%s' initialized, scheduling\n", co->name == NULL ? "main" : co->name);
 
     if (func != NULL)
         co_yield ();
@@ -125,12 +131,12 @@ struct co *co_start(const char *name, void (*func)(void *), void *arg)
 
 void co_wait(struct co *co)
 {
-    printf("co '%s' waiting for co '%s'\n", current->name, co->name);
+    debug("co '%s' waiting for co '%s'\n", current->name, co->name);
     current->status = CO_WAITING;
     co->waiter = current;
     while (co->status != CO_DEAD)
         co_yield ();
-    printf("wait '%s' over, '%s' resumed\n", co->name, current->name);
+    debug("wait '%s' over, '%s' resumed\n", co->name, current->name);
 }
 
 void co_yield (void)
@@ -160,7 +166,7 @@ void co_yield (void)
 
         assert(next != NULL);
         
-        printf("switch to co %s\n", next->name);
+        debug("switch to co %s\n", next->name);
 
         if (next->status == CO_NEW) {
             next->status = CO_RUNNING;
@@ -183,7 +189,7 @@ void co_yield (void)
             longjmp(next->context, SWITCH_IN);
         }
     } else {
-        printf("switch back to co %s\n", current->name);
+        debug("switch back to co %s\n", current->name);
         /* context is restored by longjmp, do nothing */
         return;
     }
@@ -191,7 +197,7 @@ void co_yield (void)
 
 __attribute__((constructor)) void co_main_init()
 {
-    printf("co_main_init\n");
+    debug("co_main_init\n");
     for (int i = 0; i < MAX_CO_NUM; ++i) {
         co_pool.co[i] = NULL;
     }
