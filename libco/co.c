@@ -172,7 +172,7 @@ void co_yield (void)
             stack_switch_call((void *)stack_top, current->func, (uintptr_t)current->arg);
             // current is assigned to a local register %rcx
             // why here not use %rbp? instead using rcx?
-            current->status = CO_DEAD;
+            next->status = CO_DEAD;
             co_yield ();
         } else {
             current = next;
