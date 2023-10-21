@@ -82,7 +82,7 @@ struct co_pool {
 };
 
 // this must be static, or line 186 will access it using local registers, weird!
-volatile struct co *current;
+static struct co *current;
 struct co_pool co_pool;
 
 static inline int manage_co(struct co *co)
