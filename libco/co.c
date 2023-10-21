@@ -16,7 +16,7 @@
 #ifdef DEBUG
   #define debug(...) printf(__VA_ARGS__)
 #else
-  #define debug()
+  #define debug(...)
 #endif
 
 static inline uintptr_t get_stack_pointer(void)
