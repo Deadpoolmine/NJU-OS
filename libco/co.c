@@ -138,6 +138,8 @@ void co_wait(struct co *co)
     co->waiter = current;
     while (co->status != CO_DEAD)
         co_yield ();
+    unmanage_co(co);
+    free(co);
     debug("wait '%s' over, '%s' resumed\n", co->name, current->name);
 }
 
