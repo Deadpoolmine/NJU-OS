@@ -182,7 +182,7 @@ void co_yield (void)
             // why here not use %rbp? instead using rcx?
             // NOTE: we must use a local variable here to prevent the compiler 
             //       from using current as non-saved rcx. F**King compiler! 
-            current->status = CO_DEAD;
+            next->status = CO_DEAD;
             co_yield ();
         } else {
             current = next;
