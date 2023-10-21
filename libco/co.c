@@ -147,7 +147,7 @@ void co_yield (void)
     if (val == SWITCH_OUT) {
         /* save context using setjmp */
         for (int i = co_pool.poller; i < MAX_CO_NUM; i++) {
-            if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_NEW) {
+            if (co_pool.co[i] != NULL) {
                 next = co_pool.co[i];
                 co_pool.poller = (i + 1) % MAX_CO_NUM;
                 break;
@@ -156,7 +156,7 @@ void co_yield (void)
 
         if (!next) {
             for (int i = 0; i < co_pool.poller; i++) {
-                if (co_pool.co[i] != NULL && co_pool.co[i]->status == CO_NEW) {
+                if (co_pool.co[i] != NULL) {
                     next = co_pool.co[i];
                     co_pool.poller = (i + 1) % MAX_CO_NUM;
                     break;
