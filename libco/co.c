@@ -33,22 +33,20 @@ static inline void set_stack_pointer(void *sp)
 #endif
 }
 
-// uintptr_t prev_sp = 0;
-
 static __attribute__ ((noinline)) void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 {
-    uintptr_t prev_sp = get_stack_pointer();
+    // rbp is saved in the sp, but sp is switched to the new stack
     asm volatile(
 #if __x86_64__
-        "movq %0, %%rsp; movq %2, %%rdi; call *%1"
+        "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
         : : "b"((uintptr_t)sp), "d"(entry), "a"(arg) : "memory"
 #else
         "movl %0, %%esp; movl %2, 4(%0); jmp *%1"
         : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
 #endif
     );
-    set_stack_pointer((void *)prev_sp);
-    assert(1);
+    // revert to the previous stack
+
 }
 
 enum co_status {
