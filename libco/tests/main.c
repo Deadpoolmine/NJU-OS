@@ -20,8 +20,8 @@ static void work_loop(void *arg)
 {
     const char *s = (const char *)arg;
     for (int i = 0; i < 1; ++i) {
-        // printf("%s%d  ", s, get_count());
-        // add_count();
+        printf("%s%d  ", s, get_count());
+        add_count();
         co_yield ();
     }
     printf("Finished %s\n", s);
@@ -132,11 +132,11 @@ int main()
 {
     setbuf(stdout, NULL);
 
-    // printf("Test #1. Expect: (X|Y){0, 1, 2, ..., 199}\n");
-    // test_1();
+    printf("Test #1. Expect: (X|Y){0, 1, 2, ..., 199}\n");
+    test_1();
 
-    printf("\n\nTest #2. Expect: (libco-){200, 201, 202, ..., 399}\n");
-    test_2();
+    // printf("\n\nTest #2. Expect: (libco-){200, 201, 202, ..., 399}\n");
+    // test_2();
 
     printf("\n\n");
 
