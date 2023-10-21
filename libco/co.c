@@ -44,7 +44,7 @@ static __attribute__ ((noinline)) void stack_switch_call(void *sp, void *entry, 
         : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
 #endif
     );
-    assert(0);
+    assert(1);
 }
 
 enum co_status {
