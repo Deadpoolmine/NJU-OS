@@ -50,7 +50,7 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
         : : "b"((uintptr_t)sp), "d"(entry), "a"(arg) : "memory"
 #else
         // ??? why previous 4(%0)?
-        "movl %0, %%esp; movl %2, (%0); call *%1"
+        "movl %0, %%esp; movl %2, 4(%0); call *%1"
         : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
 #endif
     );
@@ -82,7 +82,7 @@ struct co_pool {
 };
 
 // this must be static, or line 186 will access it using local registers, weird!
-struct co *current;
+static struct co *current;
 struct co_pool co_pool;
 
 static inline int manage_co(struct co *co)
@@ -191,7 +191,7 @@ void co_yield (void)
             // why here not use %rbp? instead using rcx?
             // NOTE: we must use a static global variable here to prevent the compiler
             //       from using current as non-saved rcx. F**King compiler!
-            ((volatile struct co *)current)->status = CO_DEAD;
+            current->status = CO_DEAD;
             co_yield ();
         } else {
             current = next;
