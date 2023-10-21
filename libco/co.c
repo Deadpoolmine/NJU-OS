@@ -76,7 +76,7 @@ struct co_pool {
     int poller;
 };
 
-struct co *current;
+const struct co *current;
 struct co_pool co_pool;
 
 static inline int manage_co(struct co *co)
@@ -182,7 +182,7 @@ void co_yield (void)
             // why here not use %rbp? instead using rcx?
             // NOTE: we must use a local variable here to prevent the compiler 
             //       from using current as non-saved rcx. F**King compiler! 
-            next->status = CO_DEAD;
+            current->status = CO_DEAD;
             co_yield ();
         } else {
             current = next;
