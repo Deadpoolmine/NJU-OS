@@ -55,9 +55,9 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 #endif
     );
 #if __x86_64__
-    asm volatile("movq %0, %%rsp" : : "b"(prev_sp) : "memory");
+    asm volatile("movq %0, %%rsp" : : "b"(*(&prev_sp)) : "memory");
 #else
-    asm volatile("movl %0, %%esp" : : "b"(prev_sp) : "memory");
+    asm volatile("movl %0, %%esp" : : "b"(*(&prev_sp)) : "memory");
 #endif
 }
 
