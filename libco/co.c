@@ -14,9 +14,9 @@
 // https://unix.stackexchange.com/questions/425013/why-do-i-have-to-set-ld-library-path-before-running-a-program-even-though-i-alr
 
 #ifdef DEBUG
-  #define debug(...) printf(__VA_ARGS__)
+#define debug(...) printf(__VA_ARGS__)
 #else
-  #define debug(...)
+#define debug(...)
 #endif
 
 static inline uintptr_t get_stack_pointer(void)
@@ -169,23 +169,23 @@ void co_yield (void)
         }
 
         assert(next != NULL);
-        
+
         debug("switch to co %s\n", next->name);
 
         if (next->status == CO_NEW) {
             next->status = CO_RUNNING;
-            
+
             current = next;
 
             uintptr_t stack_top = (uintptr_t)(current->stack + STACK_SIZE);
             stack_top = (stack_top - 1) & ~0xF;
-            // ebx: stack_top -> %esp, edx: current->func, eax: current->arg -> 0x4(%ebx)
+            // ebx: stack_top -> %esp, edx: current->func, eax: current->arg -> 0x4(%ebx)? Should be (%ebx)
             stack_switch_call((void *)stack_top, current->func, (uintptr_t)current->arg);
-            
+
             // current is assigned to a local register %rcx
             // why here not use %rbp? instead using rcx?
-            // NOTE: we must use a local variable here to prevent the compiler 
-            //       from using current as non-saved rcx. F**King compiler! 
+            // NOTE: we must use a static global variable here to prevent the compiler
+            //       from using current as non-saved rcx. F**King compiler!
             current->status = CO_DEAD;
             co_yield ();
         } else {
