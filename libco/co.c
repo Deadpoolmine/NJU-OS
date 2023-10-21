@@ -54,7 +54,11 @@ static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
         : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
 #endif
     );
-    set_stack_pointer((volatile void *)prev_sp);
+#if __x86_64__
+    asm volatile("movq %0, %%rsp" : : "b"(prev_sp) : "memory");
+#else
+    asm volatile("movl %0, %%esp" : : "b"(prev_sp) : "memory");
+#endif
 }
 
 enum co_status {
@@ -183,10 +187,10 @@ void co_yield (void)
 
             uintptr_t stack_top = (uintptr_t)(current->stack + STACK_SIZE);
             stack_top = (stack_top - 1) & ~0xF;
-            
+
             // ebx: stack_top -> %esp, edx: current->func, eax: current->arg -> 0x4(%ebx)? Should be (%ebx)
             stack_switch_call((void *)stack_top, current->func, (uintptr_t)current->arg);
-            
+
             // current is assigned to a local register %rcx
             // why here not use %rbp? instead using rcx?
             // NOTE: we must use a static global variable here to prevent the compiler
