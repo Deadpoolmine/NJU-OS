@@ -33,7 +33,7 @@ static inline void set_stack_pointer(void *sp)
 #endif
 }
 
-static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
+static void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 {
     asm volatile(
 #if __x86_64__
