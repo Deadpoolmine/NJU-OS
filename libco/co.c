@@ -39,7 +39,7 @@ static inline void set_stack_pointer(void *sp)
 #endif
 }
 
-static uintptr_t prev_sp = 0;
+uintptr_t prev_sp = 0;
 
 static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 {
@@ -183,6 +183,7 @@ void co_yield (void)
 
             uintptr_t stack_top = (uintptr_t)(current->stack + STACK_SIZE);
             stack_top = (stack_top - 1) & ~0xF;
+            
             // ebx: stack_top -> %esp, edx: current->func, eax: current->arg -> 0x4(%ebx)? Should be (%ebx)
             stack_switch_call((void *)stack_top, current->func, (uintptr_t)current->arg);
             
