@@ -15,7 +15,7 @@ static int get_count()
 {
     return g_count;
 }
-
+// ebx: stack_top -> %esp, edx: current->func, eax: current->arg -> 0x4(%ebx)
 static void work_loop(void *arg)
 {
     const char *s = (const char *)arg;

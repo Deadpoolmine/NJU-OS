@@ -178,7 +178,7 @@ void co_yield (void)
 
             uintptr_t stack_top = (uintptr_t)(current->stack + STACK_SIZE);
             stack_top = (stack_top - 1) & ~0xF;
-
+            // ebx: stack_top -> %esp, edx: current->func, eax: current->arg -> 0x4(%ebx)
             stack_switch_call((void *)stack_top, current->func, (uintptr_t)current->arg);
             
             // current is assigned to a local register %rcx
