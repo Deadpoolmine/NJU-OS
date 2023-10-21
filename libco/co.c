@@ -33,7 +33,7 @@ static inline void set_stack_pointer(void *sp)
 #endif
 }
 
-uint64_t prev_sp = 0;
+uintptr_t prev_sp = 0;
 
 static __attribute__ ((noinline)) void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 {
