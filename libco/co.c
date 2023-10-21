@@ -76,7 +76,7 @@ struct co_pool {
     int poller;
 };
 
-const struct co *current;
+static struct co *current;
 struct co_pool co_pool;
 
 static inline int manage_co(struct co *co)
