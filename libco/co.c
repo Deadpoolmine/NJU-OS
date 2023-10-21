@@ -33,9 +33,8 @@ static inline void set_stack_pointer(void *sp)
 #endif
 }
 
-static __attribute__ ((noinline)) void stack_switch_call(void *sp, void *entry, uintptr_t arg)
+static inline void stack_switch_call(void *sp, void *entry, uintptr_t arg)
 {
-    // rbp is saved in the sp, but sp is switched to the new stack
     asm volatile(
 #if __x86_64__
         "movq %0, %%rsp; movq %2, %%rdi; jmp *%1"
@@ -45,8 +44,6 @@ static __attribute__ ((noinline)) void stack_switch_call(void *sp, void *entry, 
         : : "b"((uintptr_t)sp - 8), "d"(entry), "a"(arg) : "memory"
 #endif
     );
-    // revert to the previous stack
-
 }
 
 enum co_status {
